@@ -37,7 +37,9 @@
             <el-col :span="14">
                 <div class="report">
                     <phase-circuits :circuits="groupedCircuits[phase]" :key="phase.id" :phase="phase"
-                                    v-for="phase in phases"></phase-circuits>
+                                    v-for="phase in phases" :switchers="switchers[phase]"></phase-circuits>
+                    <hr>
+                    <switcher-list :switchers="switchers"></switcher-list>
                 </div>
             </el-col>
         </el-row>
@@ -48,10 +50,11 @@
     import CircuitRow from "./CircuitRow";
     import CircuitRowList from "./CircuitRowList";
     import PhaseCircuits from "./PhaseCircuits";
+    import SwitcherList from "./SwitcherList";
 
     export default {
         name: 'Report',
-        components: {CircuitRow, CircuitRowList, PhaseCircuits},
+        components: {CircuitRow, CircuitRowList, PhaseCircuits, SwitcherList},
         data() {
             return {
                 newCircuit: {},
@@ -61,13 +64,14 @@
                 ],
                 circuitsJson: "[]",
                 groupedCircuits: {},
-                phases: []
+                phases: [],
+                switchers: {R:{},G:{},B:{}}
             };
         },
         watch: {
             circuits: {
                 handler: function () {
-                    this.report()
+                    this.reports()
                 },
                 deep: true
             }
@@ -96,7 +100,7 @@
                     this.circuits.splice(this.circuits.indexOf(data.circuit), 0, {...data.circuit})
                 }
             },
-            report() {
+            reports() {
                 this.circuitsJson = JSON.stringify(this.circuits)
                 this.groupedCircuits = this.circuits.reduce((map, current) => {
                     (map[current.phase] = map[current.phase] || []).push(current)

@@ -50,7 +50,7 @@
                     <th>常用功率</th>
                     </thead>
                     <tbody>
-                    <tr :key="purpose" v-for="purpose in this.colValues('purpose')">
+                    <tr :key="purpose.id" v-for="purpose in this.colValues('purpose')">
                         <td>{{purpose}}</td>
                         <td>{{sumBy("power", "purpose", purpose)}}</td>
                         <td>{{sumBy("normalPower", "purpose", purpose)}}</td>
@@ -70,7 +70,6 @@
         </el-row>
         <el-row>
             <el-col :span="24">
-
                 <table>
                     <thead>
                     <th>开关</th>
@@ -78,14 +77,16 @@
                     <th>功率</th>
                     <th>常用功率</th>
                     <th>回路</th>
+                    <th>空开</th>
                     </thead>
                     <tbody>
-                        <tr :key="type" v-for="type in this.colValues('type')">
+                        <tr :key="type.id" v-for="type in this.colValues('type')">
                         <td>{{type}}</td>
                         <td>{{countBy("type", type)}}</td>
                         <td>{{sumBy("power", "type", type)}}</td>
                         <td>{{sumBy("normalPower", "type", type)}}</td>
                         <td>{{circuitsBy("type", type)}}</td>
+                        <td><input v-model="switchers[type]"/></td>
                     </tr>
                     </tbody>
                 </table>
@@ -104,6 +105,10 @@
             },
             circuits: {
                 type: Array,
+                default: () => []
+            },
+            switchers: {
+                type: Object,
                 default: () => []
             }
         },

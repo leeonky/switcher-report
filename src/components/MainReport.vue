@@ -1,17 +1,20 @@
 <template>
     <div>
         <el-input type="textarea" v-model="circuitsJson"></el-input>
-        <el-button @click="loadCircuits" type="primary">加载</el-button>
+        <el-button @click="loadCircuits" type="danger">加载</el-button>
+        <el-button @click="report" type="success">保存</el-button>
         <hr>
         <table>
             <thead>
             <circuit-row :actions="actions" :circuit="newCircuit" @circuit-change="addCircuit"></circuit-row>
             <tr>
-                <td>名称</td>
+                <td>
+                    <el-button @click="sortCircuit('name')" type="text">名称</el-button>
+                </td>
                 <td>功率</td>
                 <td>常载功率</td>
                 <td>
-                    <el-button @click="sortCircuit" type="text">相</el-button>
+                    <el-button @click="sortCircuit('phase')" type="text">相</el-button>
                 </td>
                 <td>用途</td>
                 <td>操作</td>
@@ -36,15 +39,17 @@
                 actions: [
                     {label: "添加", type: "success", action: "new"}
                 ],
-                circuitsJson: "[]"
+                circuitsJson: "[]",
+                groupedCircuits: {}
             };
         },
         methods: {
-            sortCircuit() {
+            sortCircuit(key) {
+                console.log(key)
                 this.circuits = this.circuits.sort((c1, c2) => {
-                    if (c1.phase > c2.phase)
+                    if (c1[key] > c2[key])
                         return 1;
-                    if (c1.phase < c2.phase)
+                    if (c1[key] < c2[key])
                         return -1;
                     return 0;
                 })
@@ -64,6 +69,11 @@
             },
             report() {
                 this.circuitsJson = JSON.stringify(this.circuits)
+                this.groupedCircuits = this.circuits.reduce((map, current) => {
+                    (map[current.phase] = map[current.phase] || []).push(current)
+                    return map
+                }, {})
+                console.log(this.groupedCircuits)
             },
             loadCircuits() {
                 this.circuits = JSON.parse(this.circuitsJson)

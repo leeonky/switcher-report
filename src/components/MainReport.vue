@@ -1,37 +1,57 @@
 <template>
     <div>
-        <el-input type="textarea" v-model="circuitsJson"></el-input>
-        <el-button @click="loadCircuits" type="danger">加载</el-button>
-        <el-button @click="report" type="success">保存</el-button>
-        <hr>
-        <table>
-            <thead>
-            <circuit-row :actions="actions" :circuit="newCircuit" @circuit-change="addCircuit"></circuit-row>
-            <tr>
-                <td>
-                    <el-button @click="sortCircuit('name')" type="text">名称</el-button>
-                </td>
-                <td>功率</td>
-                <td>常载功率</td>
-                <td>
-                    <el-button @click="sortCircuit('phase')" type="text">相</el-button>
-                </td>
-                <td>用途</td>
-                <td>操作</td>
-            </tr>
-            </thead>
-            <circuit-row-list :circuits="circuits" @circuit-change="copyOrDelete"></circuit-row-list>
-        </table>
+        <el-row>
+            <el-col :span="24">
+                <div class="grid-content bg-purple-dark">
+                    <el-input type="textarea" v-model="circuitsJson"></el-input>
+                    <el-button @click="loadCircuits" type="danger">加载</el-button>
+                </div>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="10">
+                <div class="grid-content bg-purple">
+                    <table>
+                        <thead>
+                        <circuit-row :actions="actions" :circuit="newCircuit"
+                                     @circuit-change="addCircuit"></circuit-row>
+                        <tr>
+                            <td>
+                                <el-button @click="sortCircuit('name')" type="text">名称</el-button>
+                            </td>
+                            <td>功率</td>
+                            <td>常载功率</td>
+                            <td>
+                                <el-button @click="sortCircuit('phase')" type="text">相</el-button>
+                            </td>
+                            <td>用途</td>
+                            <td>分类</td>
+                            <td>P</td>
+                            <td>操作</td>
+                        </tr>
+                        </thead>
+                        <circuit-row-list :circuits="circuits" @circuit-change="copyOrDelete"></circuit-row-list>
+                    </table>
+                </div>
+            </el-col>
+            <el-col :span="14">
+                <div class="report">
+                    <phase-circuits :circuits="groupedCircuits[phase]" :key="phase.id" :phase="phase"
+                                    v-for="phase in phases"></phase-circuits>
+                </div>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
 <script>
     import CircuitRow from "./CircuitRow";
     import CircuitRowList from "./CircuitRowList";
+    import PhaseCircuits from "./PhaseCircuits";
 
     export default {
         name: 'Report',
-        components: {CircuitRow, CircuitRowList},
+        components: {CircuitRow, CircuitRowList, PhaseCircuits},
         data() {
             return {
                 newCircuit: {},
@@ -40,23 +60,33 @@
                     {label: "添加", type: "success", action: "new"}
                 ],
                 circuitsJson: "[]",
-                groupedCircuits: {}
+                groupedCircuits: {},
+                phases: []
             };
+        },
+        watch: {
+            circuits: {
+                handler: function () {
+                    this.report()
+                },
+                deep: true
+            }
         },
         methods: {
             sortCircuit(key) {
                 console.log(key)
                 this.circuits = this.circuits.sort((c1, c2) => {
-                    if (c1[key] > c2[key])
+                    let key1 = '' + c1[key];
+                    let key2 = '' + c2[key];
+                    if (key1 > key2)
                         return 1;
-                    if (c1[key] < c2[key])
+                    if (key1 < key2)
                         return -1;
                     return 0;
                 })
             },
             addCircuit(data) {
                 this.circuits.splice(0, 0, {...data.circuit})
-                this.report()
             },
             copyOrDelete(data) {
                 this.$emit("circuit-change", data)
@@ -65,7 +95,6 @@
                 } else if (data.action === "copy") {
                     this.circuits.splice(this.circuits.indexOf(data.circuit), 0, {...data.circuit})
                 }
-                this.report()
             },
             report() {
                 this.circuitsJson = JSON.stringify(this.circuits)
@@ -73,16 +102,30 @@
                     (map[current.phase] = map[current.phase] || []).push(current)
                     return map
                 }, {})
-                console.log(this.groupedCircuits)
+                this.phases = Object.keys(this.groupedCircuits).sort()
             },
             loadCircuits() {
                 this.circuits = JSON.parse(this.circuitsJson)
-                this.report()
             }
         }
     }
 </script>
 
 <style scoped>
+    .bg-purple-dark {
+        background: #99a9bf;
+    }
+
+    .bg-purple {
+        background: #d3dce6;
+    }
+
+    .grid-content {
+        border-radius: 4px;
+        min-height: 36px;
+    }
+    .report {
+        padding:  30px;
+    }
 </style>
 

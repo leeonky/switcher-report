@@ -20,8 +20,8 @@
         data() {
             return {
                 actions: [
-                    {label: "删除", type: "warning", action: "delete"},
-                    {label: "复制", type: "primary", action: "copy"}
+                    {label: "删", type: "warning", action: "delete"},
+                    {label: "复", type: "primary", action: "copy"}
                 ]
             }
         },

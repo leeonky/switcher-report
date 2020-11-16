@@ -14,10 +14,17 @@
                 <el-option label="R" value="R"></el-option>
                 <el-option label="G" value="G"></el-option>
                 <el-option label="B" value="B"></el-option>
+                <el-option label="-"></el-option>
             </el-select>
         </td>
         <td>
             <el-input v-model="circuit.purpose"/>
+        </td>
+        <td>
+            <el-input v-model="circuit.type"/>
+        </td>
+        <td>
+            <el-input v-model="circuit.bit"/>
         </td>
         <td>
             <el-button :key="action.id" :type="action.type" @click="doAction({action: action.action, circuit: circuit})"
@@ -51,5 +58,4 @@
 </script>
 
 <style scoped>
-
 </style>

@@ -12,7 +12,7 @@
                 <td>用途</td>
                 <td>操作</td>
             </tr>
-            <circuit-row :circuit="newCircuit"></circuit-row>
+            <circuit-row :actions="actions" :circuit="newCircuit"></circuit-row>
             </thead>
             <circuit-row-list :circuits="circuits"></circuit-row-list>
         </table>
@@ -29,9 +29,11 @@
         components: {CircuitRow, CircuitRowList},
         data() {
             return {
-                dialogVisible: false,
                 newCircuit: {},
-                circuits: [{}, {}]
+                circuits: [{}, {}],
+                actions: [
+                    {label: "添加", type: "success", action: "new"}
+                ]
             };
         },
         methods: {

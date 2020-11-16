@@ -19,6 +19,12 @@
         <td>
             <el-input v-model="circuit.purpose"/>
         </td>
+        <td>
+            <el-button :key="action.id" :type="action.type" @click="doAction({action: action.action, circuit: circuit})"
+                       v-for="action in actions">
+                {{action.label}}
+            </el-button>
+        </td>
     </tr>
 </template>
 
@@ -30,6 +36,15 @@
                 type: Object,
                 default: () => {
                 }
+            },
+            actions: {
+                type: Array,
+                default: () => []
+            }
+        },
+        methods: {
+            doAction(arg) {
+                this.$emit("circuit-change", arg)
             }
         }
     }

@@ -1,6 +1,7 @@
 <template>
     <tbody>
-    <circuit-row :actions="actions" :circuit="circuit" :key="circuit.id" v-for="circuit in circuits"></circuit-row>
+    <circuit-row :actions="actions" :circuit="circuit" :key="circuit.id" @circuit-change="copyOrDelete"
+                 v-for="circuit in circuits"></circuit-row>
     </tbody>
 </template>
 
@@ -22,6 +23,11 @@
                     {label: "删除", type: "warning", action: "delete"},
                     {label: "复制", type: "primary", action: "copy"}
                 ]
+            }
+        },
+        methods: {
+            copyOrDelete(data) {
+                this.$emit("circuit-change", data)
             }
         }
     }

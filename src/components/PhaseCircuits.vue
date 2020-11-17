@@ -77,6 +77,8 @@
                     <th>功率</th>
                     <th>常用功率</th>
                     <th>回路</th>
+                    <th>电流</th>
+                    <th>常用电流</th>
                     <th>空开</th>
                     </thead>
                     <tbody>
@@ -86,6 +88,8 @@
                         <td>{{sumBy("power", "type", type)}}</td>
                         <td>{{sumBy("normalPower", "type", type)}}</td>
                         <td>{{circuitsBy("type", type)}}</td>
+                        <td>{{Math.floor(sumBy("power", "type", type)*1.2/220)}}</td>
+                        <td>{{Math.floor(sumBy("normalPower", "type", type)*1.2/220)}}</td>
                         <td><input v-model="switchers[type]"/></td>
                     </tr>
                     </tbody>

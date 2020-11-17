@@ -9,7 +9,7 @@
             </el-col>
         </el-row>
         <el-row>
-            <el-col :span="10">
+            <el-col :span="8">
                 <div class="grid-content bg-purple">
                     <table>
                         <thead>
@@ -34,7 +34,7 @@
                     </table>
                 </div>
             </el-col>
-            <el-col :span="14">
+            <el-col :span="16">
                 <div class="report">
                     <phase-circuits :circuits="groupedCircuits[phase]" :key="phase.id" :phase="phase"
                                     v-for="phase in phases" :switchers="switchers[phase]"></phase-circuits>
@@ -62,7 +62,7 @@
                 actions: [
                     {label: "添加", type: "success", action: "new"}
                 ],
-                circuitsJson: "[]",
+                circuitsJson: "{}",
                 groupedCircuits: {},
                 phases: [],
                 switchers: {R:{},G:{},B:{}}
@@ -70,6 +70,12 @@
         },
         watch: {
             circuits: {
+                handler: function () {
+                    this.reports()
+                },
+                deep: true
+            },
+            switchers: {
                 handler: function () {
                     this.reports()
                 },
@@ -101,7 +107,7 @@
                 }
             },
             reports() {
-                this.circuitsJson = JSON.stringify(this.circuits)
+                this.circuitsJson = JSON.stringify({circuits: this.circuits, switchers: this.switchers})
                 this.groupedCircuits = this.circuits.reduce((map, current) => {
                     (map[current.phase] = map[current.phase] || []).push(current)
                     return map
@@ -109,7 +115,9 @@
                 this.phases = Object.keys(this.groupedCircuits).sort()
             },
             loadCircuits() {
-                this.circuits = JSON.parse(this.circuitsJson)
+                let obj = JSON.parse(this.circuitsJson);
+                this.circuits = obj.circuits
+                this.switchers = obj.switchers
             }
         }
     }

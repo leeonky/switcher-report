@@ -34,7 +34,7 @@
                   switcher: "2PC63(漏保)",
                   types: ["G路分相", "R路分相", "B路分相"]
               },{
-                  switcher: "4PC63",
+                  switcher: "4PC80",
                   types: ["总入户"]
               },{
                   switcher: "4PC63(漏保)",
